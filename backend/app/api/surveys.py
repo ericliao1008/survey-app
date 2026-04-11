@@ -22,7 +22,7 @@ def get_survey(slug: str, db: Session = Depends(get_db)):
 
 
 @router.post("/{slug}/responses", response_model=ResponseOut)
-@limiter.limit("5/minute")
+@limiter.limit("30/minute")
 def submit_response(
     request: Request,
     slug: str,

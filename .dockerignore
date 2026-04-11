@@ -1,0 +1,45 @@
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.venv/
+**/venv/
+**/env/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+
+# Node
+**/node_modules/
+**/dist/
+**/.vite/
+**/.turbo/
+
+# 本地数据与密钥
+**/.env
+**/.env.local
+**/*.db
+**/*.db-journal
+backend/survey.db
+backend/survey.db-*
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Git & CI
+.git/
+.gitignore
+.github/
+
+# 文档与杂项
+*.md
+!README.md
+DEPLOY.md
+
+# Docker 自身
+Dockerfile
+.dockerignore

@@ -1,0 +1,90 @@
+{
+  "slug": "example",
+  "title": "产品体验调研（示例）",
+  "description": "这是一份用于验证系统的示例问卷，演示了所有题型以及跳题逻辑和选项随机化等高级功能。",
+  "is_active": true,
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "您的性别是？",
+      "required": true,
+      "options": [
+        {"text": "男", "value": "male"},
+        {"text": "女", "value": "female"},
+        {"text": "不愿透露", "value": "undisclosed"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "您的年龄段是？",
+      "required": true,
+      "options": [
+        {"text": "18 岁以下", "value": "under_18"},
+        {"text": "18-25 岁", "value": "18_25"},
+        {"text": "26-35 岁", "value": "26_35"},
+        {"text": "36-50 岁", "value": "36_50"},
+        {"text": "50 岁以上", "value": "over_50"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您平时使用哪些设备上网？（可多选）",
+      "required": true,
+      "config": {
+        "randomize_options": true
+      },
+      "options": [
+        {"text": "手机", "value": "mobile"},
+        {"text": "电脑", "value": "desktop"},
+        {"text": "平板", "value": "tablet"},
+        {"text": "智能手表", "value": "watch"},
+        {"text": "其他", "value": "other"}
+      ]
+    },
+    {
+      "type": "likert_5",
+      "text": "您对本系统的整体体验满意度如何？",
+      "required": true,
+      "config": {
+        "labels": ["非常不满意", "不满意", "一般", "满意", "非常满意"]
+      }
+    },
+    {
+      "type": "rating_10",
+      "text": "您向朋友推荐本系统的可能性（0 = 绝不会，10 = 一定会）",
+      "required": true
+    },
+    {
+      "type": "text_short",
+      "text": "【仅对推荐分 9-10 分者显示】您最欣赏本系统的哪一点？",
+      "required": false,
+      "config": {
+        "placeholder": "一句话即可",
+        "show_if": {
+          "question_order": 4,
+          "operator": "gte",
+          "value": 9
+        }
+      }
+    },
+    {
+      "type": "text_short",
+      "text": "【仅对推荐分 0-6 分者显示】是什么让您难以推荐本系统？",
+      "required": false,
+      "config": {
+        "placeholder": "请直言不讳，这对我们很重要",
+        "show_if": {
+          "question_order": 4,
+          "operator": "lte",
+          "value": 6
+        }
+      }
+    },
+    {
+      "type": "text_long",
+      "text": "您有什么其他建议或意见？",
+      "required": false,
+      "config": {"placeholder": "请畅所欲言……"}
+    }
+  ]
+}

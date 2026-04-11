@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  html {
+    font-feature-settings: "cv11", "ss01", "ss03", "cv02", "cv03";
+  }
+
+  body {
+    @apply font-sans text-paper-900 antialiased;
+    background-color: #f6f1e8;
+    /* 极细噪点纹理 —— 纸张质感 */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 衬线字体 —— Fraunces 可变字体 opsz 分级
+     大尺寸用显示轴(72-144)，标题更具雕刻感；
+     正文字号用较低 opsz(24-36)，笔画更清晰 */
+  .font-serif {
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 36;
+  }
+  /* 大字号：显示轴拉满，强化编辑式雕刻感 */
+  .font-serif.text-display {
+    font-variation-settings: "opsz" 144;
+  }
+  .font-serif.text-title {
+    font-variation-settings: "opsz" 96;
+  }
+  .font-serif.text-question {
+    font-variation-settings: "opsz" 72;
+  }
+  /* 小字号：低 opsz 保证可读性 */
+  .font-serif.text-sm,
+  .font-serif.text-xs {
+    font-variation-settings: "opsz" 18;
+  }
+
+  /* 选中文本样式 */
+  ::selection {
+    background-color: #1a1714;
+    color: #fdfbf6;
+  }
+
+  /* 去掉 number input 的箭头 */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* 自定义滚动条 */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #b5a988;
+    border-radius: 999px;
+    border: 3px solid #f6f1e8;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #7d735f;
+  }
+}
+
+@layer components {
+  /* 编辑式分隔线 */
+  .rule {
+    @apply h-px bg-paper-300;
+  }
+
+  /* 编辑式"章节"标识 */
+  .chapter-mark {
+    @apply inline-flex items-center gap-3 text-[12px] uppercase tracking-[0.16em] text-wine-600 font-sans font-semibold;
+  }
+}
+
+/* ---- 额外动画：题目切换按方向、shake 错误反馈 ---- */
+@layer utilities {
+  .animate-slide-in-left {
+    animation: slideInLeft 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-slide-in-right {
+    animation: slideInRight 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-shake {
+    animation: shake 400ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* 前庭敏感用户降级 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

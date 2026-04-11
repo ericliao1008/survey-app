@@ -1,3 +1,4 @@
+import re
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -63,6 +64,20 @@ def health():
 # ======================================================================
 STATIC_DIR: Path = BASE_DIR / "static"
 
+# SPA 路由白名单：只有这些前缀会回落到 index.html，其余路径返回 404。
+# 防止扫描器探测的 /.env、/swagger-ui.html、/server-status 等垃圾路径
+# 都被 SPA fallback 兜底返回 200 + HTML 壳。
+# 与 frontend/src/App.tsx 中的 React Router 配置保持一致：
+#   /            → 重定向到默认问卷
+#   /s/:slug     → 答题页
+#   /s/:slug/thanks → 完成页
+#   /admin/:slug/stats → 后台统计
+_SPA_PATH_RE = re.compile(r"^(s/|admin/)")
+
+# 允许直接服务于根目录的具体静态文件（白名单）。按需扩展。
+_ALLOWED_ROOT_FILES = frozenset({"favicon.ico"})
+
+
 if STATIC_DIR.is_dir():
     # /assets 等静态资源走 StaticFiles
     app.mount(
@@ -73,17 +88,36 @@ if STATIC_DIR.is_dir():
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_spa(full_path: str):
-        # 保护 /api/* 路径：如果未匹配到 API 路由，返回 404 而不是 index.html
-        if full_path.startswith("api/") or full_path.startswith("docs") or full_path == "openapi.json":
+        # /api/* 和 /docs* 由路由层接管，到这里说明没匹配 → 404
+        if (
+            full_path.startswith("api/")
+            or full_path.startswith("docs")
+            or full_path == "openapi.json"
+        ):
             raise HTTPException(status_code=404, detail="Not Found")
 
-        # 具体静态文件（favicon / 字体 / 图标等）
-        candidate = STATIC_DIR / full_path
-        if full_path and candidate.is_file():
-            return FileResponse(candidate)
+        # 防御性：拒绝带 .. 的路径（路径穿越）
+        if ".." in full_path:
+            raise HTTPException(status_code=404, detail="Not Found")
 
-        # SPA fallback
         index_file = STATIC_DIR / "index.html"
         if not index_file.is_file():
             raise HTTPException(status_code=404, detail="Frontend not built")
-        return FileResponse(index_file)
+
+        # 1) 根路径 → index.html（前端 React Router 会重定向到默认问卷）
+        if full_path == "":
+            return FileResponse(index_file)
+
+        # 2) 白名单中的根目录静态文件（如 favicon.ico）
+        if full_path in _ALLOWED_ROOT_FILES:
+            candidate = STATIC_DIR / full_path
+            if candidate.is_file():
+                return FileResponse(candidate)
+            raise HTTPException(status_code=404, detail="Not Found")
+
+        # 3) React Router 已知的合法 SPA 前缀 → index.html
+        if _SPA_PATH_RE.match(full_path):
+            return FileResponse(index_file)
+
+        # 4) 其他路径一律 404
+        raise HTTPException(status_code=404, detail="Not Found")

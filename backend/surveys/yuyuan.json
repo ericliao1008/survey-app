@@ -1,7 +1,7 @@
 {
-  "slug": "example",
-  "title": "产品体验调研（示例）",
-  "description": "这是一份用于验证系统的示例问卷，演示了所有题型以及跳题逻辑和选项随机化等高级功能。",
+  "slug": "yuyuan",
+  "title": "保健品市场调研",
+  "description": "本调研旨在了解消费者对保健品的使用习惯、品牌偏好与改进建议。问卷约 1 分钟即可完成，所有回答匿名收集。",
   "is_active": true,
   "questions": [
     {
@@ -28,22 +28,25 @@
     },
     {
       "type": "multiple_choice",
-      "text": "您平时使用哪些设备上网？（可多选）",
+      "text": "您日常使用过哪些类别的保健品？（可多选）",
       "required": true,
       "config": {
         "randomize_options": true
       },
       "options": [
-        {"text": "手机", "value": "mobile"},
-        {"text": "电脑", "value": "desktop"},
-        {"text": "平板", "value": "tablet"},
-        {"text": "智能手表", "value": "watch"},
-        {"text": "其他", "value": "other"}
+        {"text": "维生素 / 矿物质", "value": "vitamin"},
+        {"text": "蛋白粉 / 氨基酸", "value": "protein"},
+        {"text": "鱼油 / Omega-3", "value": "omega3"},
+        {"text": "益生菌 / 肠道健康", "value": "probiotic"},
+        {"text": "钙片 / 骨骼健康", "value": "calcium"},
+        {"text": "胶原蛋白 / 美容养颜", "value": "collagen"},
+        {"text": "中草药 / 传统滋补", "value": "tcm"},
+        {"text": "暂未使用", "value": "none"}
       ]
     },
     {
       "type": "likert_5",
-      "text": "您对本系统的整体体验满意度如何？",
+      "text": "您对目前在用的保健品品牌总体满意度如何？",
       "required": true,
       "config": {
         "labels": ["非常不满意", "不满意", "一般", "满意", "非常满意"]
@@ -51,15 +54,15 @@
     },
     {
       "type": "rating_10",
-      "text": "您向朋友推荐本系统的可能性（0 = 绝不会，10 = 一定会）",
+      "text": "您向朋友推荐目前在用保健品的可能性（0 = 绝不会，10 = 一定会）",
       "required": true
     },
     {
       "type": "text_short",
-      "text": "【仅对推荐分 9-10 分者显示】您最欣赏本系统的哪一点？",
+      "text": "【仅对推荐分 9-10 分者显示】您最欣赏这个品牌的哪一点？",
       "required": false,
       "config": {
-        "placeholder": "一句话即可",
+        "placeholder": "如成分、效果、口味、价格……一句话即可",
         "show_if": {
           "question_order": 4,
           "operator": "gte",
@@ -69,7 +72,7 @@
     },
     {
       "type": "text_short",
-      "text": "【仅对推荐分 0-6 分者显示】是什么让您难以推荐本系统？",
+      "text": "【仅对推荐分 0-6 分者显示】是什么让您难以推荐它？",
       "required": false,
       "config": {
         "placeholder": "请直言不讳，这对我们很重要",
@@ -82,7 +85,7 @@
     },
     {
       "type": "text_long",
-      "text": "您有什么其他建议或意见？",
+      "text": "您对保健品行业或具体产品有什么建议？",
       "required": false,
       "config": {"placeholder": "请畅所欲言……"}
     }

@@ -9,7 +9,7 @@ const StatsPage = lazy(() => import("./pages/StatsPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // 默认问卷 slug - 与 backend/surveys/ 下的 JSON 文件名对应
-const DEFAULT_SLUG = "example";
+const DEFAULT_SLUG = "yuyuan";
 
 export default function App() {
   return (

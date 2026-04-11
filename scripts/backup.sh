@@ -24,8 +24,8 @@ src.close(); dst.close()
 docker compose cp app:/data/snapshot.db "${DEST}"
 docker compose exec -T app rm /data/snapshot.db
 
-# 只保留最近 14 份
-ls -1t backups/survey_*.db 2>/dev/null | tail -n +15 | xargs -r rm --
+# 只保留最近 48 份（每小时备份 × 2 天）
+ls -1t backups/survey_*.db 2>/dev/null | tail -n +49 | xargs -r rm --
 
 SIZE=$(du -h "${DEST}" | cut -f1)
 echo "[backup] ${DEST} (${SIZE}) ✓"

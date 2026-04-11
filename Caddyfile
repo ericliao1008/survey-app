@@ -1,0 +1,32 @@
+# Caddy 配置 —— 自动申请 Let's Encrypt 证书并反代到后端
+#
+# {$DOMAIN} 来自 docker-compose 注入的环境变量
+# 例如 DOMAIN=survey.deeocem.online
+
+{$DOMAIN} {
+    encode zstd gzip
+
+    # 真实客户端 IP 头，给 slowapi 的限流用
+    # （Dockerfile 启动时已加 --proxy-headers --forwarded-allow-ips='*'）
+    reverse_proxy app:8000 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # 安全头
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # 移除暴露服务器信息的头
+        -Server
+    }
+
+    # 访问日志（写到容器内 /data，必要时挂出）
+    log {
+        output stdout
+        format console
+    }
+}

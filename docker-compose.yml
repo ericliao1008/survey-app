@@ -1,0 +1,65 @@
+# 一体化部署：FastAPI 后端 + 前端静态文件 + Caddy 自动 HTTPS
+#
+# 使用步骤（在服务器上）：
+#   1. 复制 .env.deploy.example 到 .env，填好 ADMIN_TOKEN 和 DOMAIN
+#   2. docker compose up -d --build
+#   3. 等 30 秒，访问 https://${DOMAIN}/s/example
+#
+# 升级：
+#   git pull && docker compose up -d --build
+#
+# 数据备份：
+#   cp /var/lib/docker/volumes/survey_data/_data/survey.db ./backup_$(date +%F).db
+#   或用 backup.sh 脚本
+
+services:
+  app:
+    build: .
+    image: survey-app:latest
+    restart: unless-stopped
+    environment:
+      DEBUG: "false"
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?ADMIN_TOKEN 必须在 .env 中设置}
+      DATABASE_URL: sqlite:////data/survey.db
+      # 同域部署，CORS 留空即可
+      CORS_ORIGINS: ""
+      # 一般保持 false；只在需要强制覆盖已有答卷的问卷结构时临时改为 true
+      FORCE_RELOAD_SURVEYS: ${FORCE_RELOAD_SURVEYS:-false}
+    volumes:
+      - survey_data:/data
+    expose:
+      - "8000"
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN 必须在 .env 中设置（例如 survey.deeocem.online）}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - web
+
+volumes:
+  survey_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:

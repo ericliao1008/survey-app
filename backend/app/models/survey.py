@@ -16,6 +16,8 @@ class Survey(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, default=None)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # 源 JSON 文件的内容哈希，用于幂等加载（避免每次重启都重建并丢失答卷）
+    content_hash: Mapped[Optional[str]] = mapped_column(String(64), default=None)
 
     questions: Mapped[list["Question"]] = relationship(
         back_populates="survey",

@@ -1,3 +1,4 @@
+from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
 from app.db.base import Base
@@ -7,14 +8,39 @@ from app.services.survey_loader import load_all_surveys
 import app.models  # noqa: F401  确保模型被注册
 
 
+def _migrate_schema() -> None:
+    """轻量级前向迁移：补齐新字段，保护老数据库。
+
+    目前只处理 surveys.content_hash 列（旧版本无此列）。
+    """
+    inspector = inspect(engine)
+    if "surveys" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("surveys")}
+    if "content_hash" not in cols:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE surveys ADD COLUMN content_hash VARCHAR(64)"))
+        print("[init_db] 已为旧数据库补齐 surveys.content_hash 列")
+
+
 def init_db() -> None:
     """创建表结构并从 surveys/ 目录加载所有 JSON 问卷。"""
     Base.metadata.create_all(bind=engine)
+    _migrate_schema()
     db: Session = SessionLocal()
     try:
-        loaded = load_all_surveys(db, settings.surveys_dir)
-        if loaded:
-            print(f"[init_db] 已加载问卷: {', '.join(loaded)}")
+        result = load_all_surveys(
+            db,
+            settings.surveys_dir,
+            force=settings.force_reload_surveys,
+        )
+        parts = []
+        for action in ("created", "rebuilt", "skipped", "blocked", "failed"):
+            slugs = result.get(action, [])
+            if slugs:
+                parts.append(f"{action}={','.join(slugs)}")
+        if parts:
+            print(f"[init_db] 问卷加载结果: " + " | ".join(parts))
         else:
             print(f"[init_db] 未发现 JSON 问卷文件 (目录: {settings.surveys_dir})")
     finally:

@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     # 生产环境必须设为强密码，否则服务启动会报错
     admin_token: str = ""
 
+    # 强制重新加载所有 surveys/*.json（即使已有答卷，也会清空重建）
+    # 危险：会丢失答卷数据。仅在导出 CSV 之后做问卷结构变更时短暂启用
+    force_reload_surveys: bool = False
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

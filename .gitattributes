@@ -1,0 +1,7 @@
+# 强制以下文件在仓库内始终使用 LF 行尾，避免 Windows 下 CRLF 导致
+# Linux 服务器执行 .sh / docker / caddy 时报 "bad interpreter" 等错误
+*.sh        text eol=lf
+Dockerfile  text eol=lf
+Caddyfile   text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf

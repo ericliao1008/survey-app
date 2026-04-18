@@ -65,7 +65,12 @@ def _matrix_row_value(a, row_value: str) -> str:
     if a is None or not a.value_json:
         return ""
     v = a.value_json.get(row_value)
-    return "" if v is None else str(v)
+    if v is None:
+        return ""
+    # matrix_multi 情况：v 是列 value 的数组
+    if isinstance(v, list):
+        return " / ".join(str(x) for x in v)
+    return str(v)
 
 
 def _cbc_cell(a, col: str) -> str:
@@ -107,7 +112,7 @@ def export_responses_csv(db: Session, survey: Survey) -> str:
         def _finder(answer_map, qid=q.id, pipe_opt_id=None):
             return answer_map.get((qid, pipe_opt_id))
 
-        if q.type == "matrix_likert" or q.type == "matrix_single":
+        if q.type in ("matrix_likert", "matrix_single", "matrix_multi"):
             rows = cfg.get("matrix_rows", [])
             pipe_list = pipe_opts if pipe_opts else [None]
             for po in pipe_list:
@@ -255,7 +260,7 @@ def compute_basic_stats(db: Session, survey: Survey) -> dict:
                     if a.question_id == q.id and a.value_text:
                         stat["answered"] += 1
 
-        elif q.type in ("matrix_single", "matrix_likert", "cbc_task"):
+        elif q.type in ("matrix_single", "matrix_likert", "matrix_multi", "cbc_task"):
             for r in responses:
                 for a in r.answers:
                     if a.question_id == q.id and a.value_json:

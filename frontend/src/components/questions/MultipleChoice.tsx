@@ -21,9 +21,11 @@ export function MultipleChoice({
 }: Props) {
   const cfg = (question.config ?? {}) as {
     max_select?: number;
+    min_select?: number;
     option_extras?: Record<string, OptionExtra>;
   };
   const maxSelect = cfg.max_select;
+  const minSelect = cfg.min_select;
   const optionExtras = cfg.option_extras ?? {};
 
   const toggle = (id: number) => {
@@ -41,10 +43,15 @@ export function MultipleChoice({
     <div>
       <p className="chapter-mark mb-4 text-paper-600">
         <span className="inline-block w-4 h-0.5 bg-paper-500" />
-        {maxSelect ? `可多选 · 最多选 ${maxSelect} 项` : "可多选"}
-        {maxSelect && (
+        {minSelect && maxSelect && minSelect === maxSelect
+          ? `必选 ${minSelect} 项`
+          : maxSelect
+            ? `可多选 · 最多选 ${maxSelect} 项`
+            : "可多选"}
+        {(maxSelect || minSelect) && (
           <span className="ml-2 text-paper-500">
-            （已选 {value.length}/{maxSelect}）
+            （已选 {value.length}
+            {maxSelect ? `/${maxSelect}` : ""}）
           </span>
         )}
       </p>

@@ -37,6 +37,10 @@ import {
   MatrixSingle,
   isMatrixSingleAnswered,
 } from "./questions/MatrixSingle";
+import {
+  MatrixMulti,
+  isMatrixMultiAnswered,
+} from "./questions/MatrixMulti";
 import { CBCTask, isCBCAnswered } from "./questions/CBCTask";
 
 interface Props {
@@ -56,9 +60,9 @@ function isAnswered(q: Question, state: AnswerState | undefined): boolean {
       return state.singleOptionId != null;
     case "multiple_choice": {
       const ids = state.optionIds ?? [];
-      if (ids.length === 0) return false;
       const cfg = (q.config ?? {}) as { max_select?: number; min_select?: number };
-      if (cfg.min_select && ids.length < cfg.min_select) return false;
+      const minNeeded = cfg.min_select ?? 1;
+      if (ids.length < minNeeded) return false;
       return true;
     }
     case "text_short":
@@ -74,6 +78,8 @@ function isAnswered(q: Question, state: AnswerState | undefined): boolean {
       return isMatrixLikertAnswered(q, state.matrix);
     case "matrix_single":
       return isMatrixSingleAnswered(q, state.matrix);
+    case "matrix_multi":
+      return isMatrixMultiAnswered(q, state.matrix);
     case "cbc_task":
       return isCBCAnswered(state.cbc);
   }
@@ -138,6 +144,7 @@ function toPayload(
       return { ...base, value_text: state.date ?? "" };
     case "matrix_likert":
     case "matrix_single":
+    case "matrix_multi":
       return {
         ...base,
         value_json: (state.matrix ?? {}) as unknown as Record<string, unknown>,
@@ -167,33 +174,96 @@ function renderQuestionText(inst: QuestionInstance): string {
   return inst.question.text.replace(/\{pipe\}/g, inst.pipeOption.text);
 }
 
-// 把可见题目展开为题目实例（pipe 题按源题选中项展开）
+// 把可见题目展开为题目实例。
+// Pipe 题按源题选中项展开；同一 pipe 源的连续题目会**先按选项分组，每组内部保持题目顺序**。
+// 这样用户答完一个品类的所有题再进入下一个品类（而非按题横向扩展）。
 function expandInstances(
   visible: Question[],
   answers: Record<string, AnswerState>
 ): QuestionInstance[] {
   const out: QuestionInstance[] = [];
-  for (const q of visible) {
+  let i = 0;
+  while (i < visible.length) {
+    const q = visible[i];
     const cfg = (q.config ?? {}) as {
       pipe_from?: { question_order: number };
     };
     const pf = cfg.pipe_from;
     if (pf && typeof pf.question_order === "number") {
-      const srcQ = visible.find((v) => v.order === pf.question_order);
-      if (!srcQ) continue;
-      const srcState = answers[String(srcQ.id)];
-      const selectedIds = srcState?.optionIds ?? [];
-      for (const optId of selectedIds) {
-        const opt = srcQ.options.find((o) => o.id === optId);
-        if (opt) {
-          out.push({ key: `${q.id}:${opt.id}`, question: q, pipeOption: opt });
+      // 找出同一 pipe 源的连续题目块
+      const srcOrder = pf.question_order;
+      const blockEnd = (() => {
+        let j = i;
+        while (j < visible.length) {
+          const qj = visible[j];
+          const cfgj = (qj.config ?? {}) as {
+            pipe_from?: { question_order: number };
+          };
+          if (cfgj.pipe_from?.question_order !== srcOrder) break;
+          j++;
+        }
+        return j;
+      })();
+      const block = visible.slice(i, blockEnd);
+
+      const srcQ = visible.find((v) => v.order === srcOrder);
+      if (srcQ) {
+        const srcState = answers[String(srcQ.id)];
+        const selectedIds = srcState?.optionIds ?? [];
+        // 外层：按源题选项顺序
+        for (const optId of selectedIds) {
+          const opt = srcQ.options.find((o) => o.id === optId);
+          if (!opt) continue;
+          // 内层：同一选项下依次问完整个 pipe 题块
+          for (const bq of block) {
+            out.push({
+              key: `${bq.id}:${opt.id}`,
+              question: bq,
+              pipeOption: opt,
+            });
+          }
         }
       }
+      i = blockEnd;
     } else {
       out.push({ key: String(q.id), question: q, pipeOption: null });
+      i++;
     }
   }
   return out;
+}
+
+// 在题目标题下方展示"（单选）/（多选）/（多选，最多 N 项）/（必选 N 项）"
+function questionTypeHint(q: Question): string | null {
+  const cfg = (q.config ?? {}) as {
+    max_select?: number;
+    min_select?: number;
+  };
+  switch (q.type) {
+    case "single_choice":
+      return "单选";
+    case "multiple_choice": {
+      const min = cfg.min_select;
+      const max = cfg.max_select;
+      if (min && max && min === max) return `必选 ${min} 项`;
+      if (max) return `多选，最多 ${max} 项`;
+      return "多选";
+    }
+    case "matrix_likert":
+      return "矩阵评分（每行打分）";
+    case "matrix_single":
+      return "矩阵单选（每行选一项）";
+    case "matrix_multi":
+      return "矩阵多选（每行可多选）";
+    case "cbc_task":
+      return "单选（A / B / C 或「以上都不选」）";
+    case "likert_5":
+      return "5 点量表";
+    case "rating_10":
+      return "0-10 分";
+    default:
+      return null;
+  }
 }
 
 // ------------------------------------------------------------------
@@ -613,6 +683,14 @@ export function SurveyRunner({ survey }: Props) {
             onChange={(m) => updateState({ matrix: m })}
           />
         );
+      case "matrix_multi":
+        return (
+          <MatrixMulti
+            question={q}
+            value={(s.matrix ?? {}) as MatrixAnswer}
+            onChange={(m) => updateState({ matrix: m })}
+          />
+        );
       case "cbc_task":
         return (
           <CBCTask
@@ -663,6 +741,14 @@ export function SurveyRunner({ survey }: Props) {
             <h2 className="font-serif text-question text-paper-900 leading-[1.2] tracking-tight">
               {questionText}
             </h2>
+            {(() => {
+              const hint = questionTypeHint(current.question);
+              return hint ? (
+                <p className="mt-3 font-sans text-xs sm:text-sm text-paper-600">
+                  （{hint}）
+                </p>
+              ) : null;
+            })()}
           </div>
 
           <div className="mt-6 sm:mt-8">{renderQuestion(current)}</div>

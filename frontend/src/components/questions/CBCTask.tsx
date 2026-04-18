@@ -26,8 +26,10 @@ export function CBCTask({ question, value, onChange }: Props) {
   );
 
   // 回写的 value 始终包含 profiles 快照，便于后端保留所见方案
+  // 注意：choice 允许为 "A" / "B" / "C" / "none"，四种都是有效答案
   const setChoice = (choice: CBCAnswer["choice"]) => {
-    onChange({ profiles, choice });
+    if (choice === null) return; // 防御：不允许主动设置为 null
+    onChange({ profiles: [...profiles], choice });
   };
 
   const current = value?.choice ?? null;
@@ -120,5 +122,8 @@ export function CBCTask({ question, value, onChange }: Props) {
 }
 
 export function isCBCAnswered(value: CBCAnswer | undefined): boolean {
-  return !!value && value.choice != null;
+  if (!value) return false;
+  const c = value.choice;
+  // "none" 等价于"以上都不选"，也是有效作答
+  return c === "A" || c === "B" || c === "C" || c === "none";
 }

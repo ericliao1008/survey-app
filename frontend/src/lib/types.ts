@@ -9,6 +9,7 @@ export type QuestionType =
   | "date"
   | "matrix_single"
   | "matrix_likert"
+  | "matrix_multi"
   | "cbc_task";
 
 export interface Option {
@@ -47,8 +48,12 @@ export interface CBCAnswer {
   choice: "A" | "B" | "C" | "none" | null;
 }
 
-/** 矩阵题答案：每行 value → 列 value（matrix_single）或 1-5 评分（matrix_likert） */
-export type MatrixAnswer = Record<string, string | number>;
+/** 矩阵题答案：
+ * - matrix_single: 每行 value → 单列 value (string)
+ * - matrix_likert: 每行 value → 1-5 评分 (number)
+ * - matrix_multi:  每行 value → 多列 value 数组 (string[])
+ */
+export type MatrixAnswer = Record<string, string | number | string[]>;
 
 /** 运行时的题目实例：普通题 = question；pipe 题 = question + pipeOption */
 export interface QuestionInstance {

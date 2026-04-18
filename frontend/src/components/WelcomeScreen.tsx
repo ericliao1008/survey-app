@@ -21,6 +21,7 @@ const WEIGHTS: Record<Question["type"], number> = {
   rating_10: 8,
   matrix_single: 30,
   matrix_likert: 40,
+  matrix_multi: 35,
   cbc_task: 35,
 };
 

@@ -47,6 +47,7 @@ VALID_TYPES = {
     "date",
     "matrix_single",   # 矩阵单选：每行一个单选，共享列头
     "matrix_likert",   # 矩阵 5 点量表：每行一次 1-5 评分
+    "matrix_multi",    # 矩阵多选：每行多选，支持 mutex_column 互斥列
     "cbc_task",        # CBC 联合分析的单道题目（三选一 + 可选"都不选"）
 }
 
@@ -56,17 +57,22 @@ def _validate_question_config(q_data: dict) -> None:
     cfg = q_data.get("config") or {}
     q_type = q_data["type"]
 
-    if q_type in ("matrix_single", "matrix_likert"):
+    if q_type in ("matrix_single", "matrix_likert", "matrix_multi"):
         rows = cfg.get("matrix_rows")
         if not isinstance(rows, list) or not rows:
             raise ValueError(f"{q_type} 题必须在 config.matrix_rows 中提供行列表")
         for r in rows:
             if not isinstance(r, dict) or "value" not in r or "text" not in r:
                 raise ValueError(f"{q_type} 题的 matrix_rows 元素必须含 value/text")
-        if q_type == "matrix_single":
+        if q_type in ("matrix_single", "matrix_multi"):
             cols = cfg.get("matrix_columns")
             if not isinstance(cols, list) or not cols:
-                raise ValueError("matrix_single 题必须在 config.matrix_columns 中提供列")
+                raise ValueError(f"{q_type} 题必须在 config.matrix_columns 中提供列")
+
+    if q_type == "multiple_choice":
+        min_sel = cfg.get("min_select")
+        if min_sel is not None and (not isinstance(min_sel, int) or min_sel <= 0):
+            raise ValueError("config.min_select 必须为正整数")
 
     if q_type == "cbc_task":
         attrs = cfg.get("cbc_attributes")

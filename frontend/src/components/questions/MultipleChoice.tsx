@@ -1,16 +1,38 @@
 import type { Question } from "@/lib/types";
 
+interface OptionExtra {
+  text_placeholder?: string;
+}
+
 interface Props {
   question: Question;
   value: number[];
   onChange: (optionIds: number[]) => void;
+  optionTexts?: Record<number, string>;
+  onOptionTextChange?: (optionId: number, text: string) => void;
 }
 
-export function MultipleChoice({ question, value, onChange }: Props) {
+export function MultipleChoice({
+  question,
+  value,
+  onChange,
+  optionTexts,
+  onOptionTextChange,
+}: Props) {
+  const cfg = (question.config ?? {}) as {
+    max_select?: number;
+    option_extras?: Record<string, OptionExtra>;
+  };
+  const maxSelect = cfg.max_select;
+  const optionExtras = cfg.option_extras ?? {};
+
   const toggle = (id: number) => {
     if (value.includes(id)) {
       onChange(value.filter((v) => v !== id));
     } else {
+      if (maxSelect && value.length >= maxSelect) {
+        return;
+      }
       onChange([...value, id]);
     }
   };
@@ -19,25 +41,33 @@ export function MultipleChoice({ question, value, onChange }: Props) {
     <div>
       <p className="chapter-mark mb-4 text-paper-600">
         <span className="inline-block w-4 h-0.5 bg-paper-500" />
-        可多选
+        {maxSelect ? `可多选 · 最多选 ${maxSelect} 项` : "可多选"}
+        {maxSelect && (
+          <span className="ml-2 text-paper-500">
+            （已选 {value.length}/{maxSelect}）
+          </span>
+        )}
       </p>
       <ul className="divide-y divide-paper-300 border-t border-b border-paper-300">
         {question.options.map((opt, i) => {
           const selected = value.includes(opt.id);
+          const atMax = !!maxSelect && value.length >= maxSelect && !selected;
+          const extra = optionExtras[opt.value];
           return (
             <li key={opt.id}>
               <button
                 type="button"
                 onClick={() => toggle(opt.id)}
+                disabled={atMax}
                 className={`
                   group relative w-full text-left flex items-center gap-5 sm:gap-6
                   py-5 sm:py-6 pl-5 pr-2 -mx-2 rounded-sm
                   transition-all duration-300 ease-out-expo
                   focus:outline-none focus-visible:bg-paper-100 focus-visible:ring-2 focus-visible:ring-wine-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-200
                   ${selected ? "text-paper-900 bg-wine-600/[0.035]" : "text-paper-800 hover:text-paper-900"}
+                  ${atMax ? "opacity-40 cursor-not-allowed" : ""}
                 `}
               >
-                {/* 左侧装饰条 —— 编辑式强调 */}
                 <span
                   aria-hidden="true"
                   className={`
@@ -91,6 +121,20 @@ export function MultipleChoice({ question, value, onChange }: Props) {
                   {opt.text}
                 </span>
               </button>
+              {selected && extra && onOptionTextChange && (
+                <div
+                  className="pl-14 pr-2 pb-5 -mt-2 animate-fade-in"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    type="text"
+                    value={optionTexts?.[opt.id] ?? ""}
+                    onChange={(e) => onOptionTextChange(opt.id, e.target.value)}
+                    placeholder={extra.text_placeholder ?? "请填写"}
+                    className="w-full bg-transparent border-0 border-b border-paper-400 focus:border-wine-600 focus:ring-0 outline-none font-serif text-base text-paper-900 placeholder:text-paper-500 py-2"
+                  />
+                </div>
+              )}
             </li>
           );
         })}

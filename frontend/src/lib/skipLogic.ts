@@ -4,9 +4,12 @@
 //   "show_if": {
 //     "question_order": 0,          // 引用的题目 order (0-based)
 //     "operator": "equals" | "not_equals" | "includes" | "not_includes" | "gte" | "lte",
-//     "value": "option_value" | 5   // 对于 choice 题用 Option.value，数值题用 number
+//     "value": "option_value" | 5
 //   }
 // }
+//
+// 注意：answers 以字符串键索引（`${question_id}` 或 `${question_id}:${pipe_option_id}`）。
+// skip_logic 只读取"原始题"（非 pipe 实例）答案，key = String(question.id)。
 
 import type { Question } from "./types";
 import type { DraftAnswerState } from "./drafts";
@@ -35,18 +38,14 @@ function isShowIfCondition(x: unknown): x is ShowIfCondition {
   );
 }
 
-/**
- * 判断单个条件是否满足。
- * 找不到引用题/引用题未作答时返回 false（默认隐藏）。
- */
 function evaluateCondition(
   cond: ShowIfCondition,
   allQuestions: Question[],
-  answers: Record<number, DraftAnswerState>
+  answers: Record<string, DraftAnswerState>
 ): boolean {
   const refQ = allQuestions[cond.question_order];
   if (!refQ) return false;
-  const a = answers[refQ.id];
+  const a = answers[String(refQ.id)];
   if (!a) return false;
 
   switch (cond.operator) {
@@ -97,11 +96,10 @@ function evaluateCondition(
 
 /**
  * 根据当前作答过滤出可见题目。
- * 对没有 show_if 的题目总是可见。
  */
 export function getVisibleQuestions(
   allQuestions: Question[],
-  answers: Record<number, DraftAnswerState>
+  answers: Record<string, DraftAnswerState>
 ): Question[] {
   return allQuestions.filter((q) => {
     const showIf = (q.config as Record<string, unknown> | null | undefined)

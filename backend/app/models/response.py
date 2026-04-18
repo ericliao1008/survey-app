@@ -38,5 +38,9 @@ class Answer(Base):
     value_text: Mapped[Optional[str]] = mapped_column(Text, default=None)
     value_number: Mapped[Optional[float]] = mapped_column(Float, default=None)
     selected_option_ids: Mapped[Optional[list]] = mapped_column(JSON, default=None)  # list[int]
+    # 矩阵题 / CBC 等结构化答案
+    value_json: Mapped[Optional[dict]] = mapped_column(JSON, default=None)
+    # 循环追问：标记本答案绑定到 pipe 源题的哪个选项
+    pipe_option_id: Mapped[Optional[int]] = mapped_column(Integer, default=None, index=True)
 
     response: Mapped["Response"] = relationship(back_populates="answers")

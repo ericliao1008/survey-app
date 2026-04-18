@@ -1,6 +1,9 @@
 // 问卷作答草稿持久化
 // 用于断点续填：用户刷新/关闭后仍能恢复未完成的答卷
+//
+// v2：key 改为字符串（兼容 pipe 实例的复合键：`${question_id}:${pipe_option_id}`）
 
+import type { AnswerState, CBCAnswer, MatrixAnswer } from "./types";
 import { getVisitorId } from "./visitor";
 
 export type DraftAnswerState = {
@@ -9,17 +12,20 @@ export type DraftAnswerState = {
   optionIds?: number[];
   singleOptionId?: number | null;
   date?: string;
+  matrix?: MatrixAnswer;
+  cbc?: CBCAnswer;
+  optionTexts?: Record<number, string>;
 };
 
 export interface Draft {
   slug: string;
   visitorId: string;
   idx: number;
-  answers: Record<number, DraftAnswerState>;
+  answers: Record<string, DraftAnswerState>;
   updatedAt: number; // ms timestamp
 }
 
-const VERSION = 1;
+const VERSION = 2;
 const MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7; // 7 天过期
 
 function key(slug: string): string {
@@ -29,10 +35,9 @@ function key(slug: string): string {
 export function saveDraft(
   slug: string,
   idx: number,
-  answers: Record<number, DraftAnswerState>
+  answers: Record<string, AnswerState>
 ): void {
   try {
-    // 空草稿不保存
     if (idx === 0 && Object.keys(answers).length === 0) {
       return;
     }
@@ -54,12 +59,10 @@ export function loadDraft(slug: string): Draft | null {
     const raw = localStorage.getItem(key(slug));
     if (!raw) return null;
     const draft = JSON.parse(raw) as Draft;
-    // 过期清理
     if (Date.now() - draft.updatedAt > MAX_AGE_MS) {
       clearDraft(slug);
       return null;
     }
-    // 完整性校验
     if (typeof draft.idx !== "number" || typeof draft.answers !== "object") {
       return null;
     }

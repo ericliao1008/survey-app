@@ -45,7 +45,45 @@ VALID_TYPES = {
     "rating_10",
     "number",
     "date",
+    "matrix_single",   # 矩阵单选：每行一个单选，共享列头
+    "matrix_likert",   # 矩阵 5 点量表：每行一次 1-5 评分
+    "cbc_task",        # CBC 联合分析的单道题目（三选一 + 可选"都不选"）
 }
+
+
+def _validate_question_config(q_data: dict) -> None:
+    """对扩展题型的 config 做基础校验。catch 明显错误，不做深度类型检查。"""
+    cfg = q_data.get("config") or {}
+    q_type = q_data["type"]
+
+    if q_type in ("matrix_single", "matrix_likert"):
+        rows = cfg.get("matrix_rows")
+        if not isinstance(rows, list) or not rows:
+            raise ValueError(f"{q_type} 题必须在 config.matrix_rows 中提供行列表")
+        for r in rows:
+            if not isinstance(r, dict) or "value" not in r or "text" not in r:
+                raise ValueError(f"{q_type} 题的 matrix_rows 元素必须含 value/text")
+        if q_type == "matrix_single":
+            cols = cfg.get("matrix_columns")
+            if not isinstance(cols, list) or not cols:
+                raise ValueError("matrix_single 题必须在 config.matrix_columns 中提供列")
+
+    if q_type == "cbc_task":
+        attrs = cfg.get("cbc_attributes")
+        if not isinstance(attrs, list) or not attrs:
+            raise ValueError("cbc_task 必须在 config.cbc_attributes 中定义属性列表")
+        for a in attrs:
+            if not isinstance(a, dict) or not isinstance(a.get("levels"), list):
+                raise ValueError("cbc_attributes 每项必须含 levels 列表")
+
+    if "pipe_from" in cfg:
+        pf = cfg["pipe_from"]
+        if not isinstance(pf, dict) or "question_order" not in pf:
+            raise ValueError("config.pipe_from 必须含 question_order")
+
+    max_sel = cfg.get("max_select")
+    if max_sel is not None and (not isinstance(max_sel, int) or max_sel <= 0):
+        raise ValueError("config.max_select 必须为正整数")
 
 
 def _hash_file(json_path: Path) -> str:
@@ -73,6 +111,7 @@ def _create_survey(db: Session, data: dict, content_hash: str) -> Survey:
         q_type = q_data["type"]
         if q_type not in VALID_TYPES:
             raise ValueError(f"未知题型: {q_type}")
+        _validate_question_config(q_data)
 
         question = Question(
             survey_id=survey.id,

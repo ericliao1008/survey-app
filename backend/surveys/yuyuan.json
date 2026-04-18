@@ -1,93 +1,820 @@
 {
   "slug": "yuyuan",
-  "title": "保健品市场调研",
-  "description": "本调研旨在了解消费者对保健品的使用习惯、品牌偏好与改进建议。问卷约 1 分钟即可完成，所有回答匿名收集。",
+  "title": "中国营养保健品消费者调研问卷",
+  "description": "您好，我们正在进行一项关于中国消费者健康管理与营养保健品消费习惯的匿名研究。本问卷仅用于市场研究分析，所有答案仅做统计用途，不涉及个人隐私。问卷预计耗时约 12-15 分钟，感谢您的参与。",
   "is_active": true,
   "questions": [
+    {
+      "type": "single_choice",
+      "text": "您的年龄是？",
+      "required": true,
+      "config": {
+        "terminate_on_values": ["under_18", "over_70"],
+        "terminate_message": "非常感谢您的参与。本次调研面向 18-70 岁的消费者，您不在本次调研对象范围内，我们不再继续询问。再次感谢您抽出时间。"
+      },
+      "options": [
+        {"text": "18 岁以下", "value": "under_18"},
+        {"text": "18-24 岁", "value": "18_24"},
+        {"text": "25-34 岁", "value": "25_34"},
+        {"text": "35-44 岁", "value": "35_44"},
+        {"text": "45-54 岁", "value": "45_54"},
+        {"text": "55-70 岁", "value": "55_70"},
+        {"text": "70 岁以上", "value": "over_70"}
+      ]
+    },
     {
       "type": "single_choice",
       "text": "您的性别是？",
       "required": true,
       "options": [
         {"text": "男", "value": "male"},
-        {"text": "女", "value": "female"},
-        {"text": "不愿透露", "value": "undisclosed"}
+        {"text": "女", "value": "female"}
       ]
     },
     {
       "type": "single_choice",
-      "text": "您的年龄段是？",
+      "text": "您目前居住城市属于？",
       "required": true,
       "options": [
-        {"text": "18 岁以下", "value": "under_18"},
-        {"text": "18-25 岁", "value": "18_25"},
-        {"text": "26-35 岁", "value": "26_35"},
-        {"text": "36-50 岁", "value": "36_50"},
-        {"text": "50 岁以上", "value": "over_50"}
+        {"text": "一线城市", "value": "tier1"},
+        {"text": "新一线城市", "value": "new_tier1"},
+        {"text": "二线城市", "value": "tier2"},
+        {"text": "三线城市", "value": "tier3"},
+        {"text": "四线及以下城市", "value": "tier4_below"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "您家庭税后月收入约为？",
+      "required": true,
+      "options": [
+        {"text": "5000 元以下", "value": "under_5k"},
+        {"text": "5000-1 万元", "value": "5k_10k"},
+        {"text": "1-2 万元", "value": "10k_20k"},
+        {"text": "2-3 万元", "value": "20k_30k"},
+        {"text": "3-5 万元", "value": "30k_50k"},
+        {"text": "5 万元以上", "value": "over_50k"},
+        {"text": "不方便透露", "value": "undisclosed"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "您目前家庭阶段是？",
+      "required": true,
+      "config": {
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
+      },
+      "options": [
+        {"text": "单身", "value": "single"},
+        {"text": "已婚未育", "value": "married_no_kids"},
+        {"text": "已婚有孩（孩子未成年）", "value": "married_kids_minor"},
+        {"text": "已婚有孩（孩子成年）", "value": "married_kids_adult"},
+        {"text": "空巢家庭", "value": "empty_nest"},
+        {"text": "其他", "value": "other"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "过去 12 个月，您是否购买过营养保健品（含给自己或家人购买）？",
+      "required": true,
+      "options": [
+        {"text": "是", "value": "yes"},
+        {"text": "否", "value": "no"}
       ]
     },
     {
       "type": "multiple_choice",
-      "text": "您日常使用过哪些类别的保健品？（可多选）",
+      "text": "过去 12 个月，您或家人重点关注过哪些健康需求？",
       "required": true,
       "config": {
-        "randomize_options": true
+        "max_select": 3,
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
       },
       "options": [
-        {"text": "维生素 / 矿物质", "value": "vitamin"},
-        {"text": "蛋白粉 / 氨基酸", "value": "protein"},
-        {"text": "鱼油 / Omega-3", "value": "omega3"},
-        {"text": "益生菌 / 肠道健康", "value": "probiotic"},
-        {"text": "钙片 / 骨骼健康", "value": "calcium"},
-        {"text": "胶原蛋白 / 美容养颜", "value": "collagen"},
-        {"text": "中草药 / 传统滋补", "value": "tcm"},
-        {"text": "暂未使用", "value": "none"}
+        {"text": "日常营养补充", "value": "daily_nutrition"},
+        {"text": "提升免疫力", "value": "immunity"},
+        {"text": "肠胃调理", "value": "gut"},
+        {"text": "睡眠/情绪压力", "value": "sleep_mood"},
+        {"text": "精力恢复/抗疲劳", "value": "energy"},
+        {"text": "心脑血管健康", "value": "cardio"},
+        {"text": "骨骼关节健康", "value": "joint"},
+        {"text": "补气血/女性营养", "value": "qi_blood"},
+        {"text": "美容养颜/抗衰老", "value": "beauty"},
+        {"text": "体重管理", "value": "weight"},
+        {"text": "肝脏养护", "value": "liver"},
+        {"text": "护眼/用眼健康", "value": "eye"},
+        {"text": "草本调理/体质养护", "value": "herbal_care"}
       ]
     },
     {
-      "type": "likert_5",
-      "text": "您对目前在用的保健品品牌总体满意度如何？",
+      "type": "multiple_choice",
+      "text": "您购买营养保健品主要是给谁使用？",
       "required": true,
       "config": {
-        "labels": ["非常不满意", "不满意", "一般", "满意", "非常满意"]
-      }
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "自己", "value": "self"},
+        {"text": "配偶/伴侣", "value": "spouse"},
+        {"text": "父母长辈", "value": "elder"},
+        {"text": "孩子", "value": "kid"},
+        {"text": "全家共同使用", "value": "family"}
+      ]
     },
     {
-      "type": "rating_10",
-      "text": "您向朋友推荐目前在用保健品的可能性（0 = 绝不会，10 = 一定会）",
-      "required": true
-    },
-    {
-      "type": "text_short",
-      "text": "【仅对推荐分 9-10 分者显示】您最欣赏这个品牌的哪一点？",
-      "required": false,
+      "type": "single_choice",
+      "text": "过去一年，您大概花费多少金额购买保健品？",
+      "required": true,
       "config": {
-        "placeholder": "如成分、效果、口味、价格……一句话即可",
-        "show_if": {
-          "question_order": 4,
-          "operator": "gte",
-          "value": 9
-        }
-      }
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "¥100 以下", "value": "under_100"},
+        {"text": "¥100-¥499", "value": "100_499"},
+        {"text": "¥500-¥999", "value": "500_999"},
+        {"text": "¥1000-¥1999", "value": "1000_1999"},
+        {"text": "¥2000 及以上", "value": "over_2000"}
+      ]
     },
     {
-      "type": "text_short",
-      "text": "【仅对推荐分 0-6 分者显示】是什么让您难以推荐它？",
-      "required": false,
+      "type": "single_choice",
+      "text": "您是否有过「用了一段时间后停用某保健品」的经历？如有，最主要原因是？",
+      "required": true,
       "config": {
-        "placeholder": "请直言不讳，这对我们很重要",
-        "show_if": {
-          "question_order": 4,
-          "operator": "lte",
-          "value": 6
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "没有，我用过的产品一直在续购", "value": "never"},
+        {"text": "感觉不到明显效果，放弃了", "value": "no_effect"},
+        {"text": "价格太贵，长期消费压力大", "value": "too_expensive"},
+        {"text": "服用太麻烦，坚持不下去", "value": "hard_to_continue"},
+        {"text": "换了更好/更便宜的替代品", "value": "replaced"},
+        {"text": "看到负面新闻或副作用报道", "value": "negative_news"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "假如未来您要新增购买一类营养保健品，您更偏向以下哪类需求？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "日常基础营养补充", "value": "daily"},
+        {"text": "肠胃调理/轻盈控体", "value": "gut_slim"},
+        {"text": "心脑血管/中老年健康管理", "value": "cardio_elder"},
+        {"text": "抗衰美容/悦己管理", "value": "beauty_age"},
+        {"text": "草本调理/体质养护", "value": "herbal_care"},
+        {"text": "骨骼关节健康/补钙", "value": "joint_calcium"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您听说过以下哪些保健产品？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "鱼油", "value": "fish_oil"},
+        {"text": "复合维生素", "value": "multivitamin"},
+        {"text": "奶蓟草、蔓越莓、叶黄素等草本提取保健品", "value": "herbal_extract"},
+        {"text": "固元膏、阿胶、枸杞原浆等传统中式保养品", "value": "tcm_tonic"},
+        {"text": "补镁营养剂", "value": "magnesium"},
+        {"text": "补铁营养剂", "value": "iron"},
+        {"text": "NMN 抗衰产品", "value": "nmn"},
+        {"text": "胶原蛋白", "value": "collagen"},
+        {"text": "益生菌", "value": "probiotic"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您过去 12 个月购买过哪些品类？（最多选 3 项，后续会针对这几个品类详细询问）",
+      "required": true,
+      "config": {
+        "max_select": 3,
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "option_extras": {
+          "herbal_extract": {"text_placeholder": "请填写具体名称（如奶蓟草、叶黄素…）"},
+          "tcm_tonic": {"text_placeholder": "请填写具体名称（如阿胶、枸杞原浆…）"}
         }
+      },
+      "options": [
+        {"text": "鱼油", "value": "fish_oil"},
+        {"text": "复合维生素", "value": "multivitamin"},
+        {"text": "草本提取保健品", "value": "herbal_extract"},
+        {"text": "传统中式保养品", "value": "tcm_tonic"},
+        {"text": "补镁营养剂", "value": "magnesium"},
+        {"text": "补铁营养剂", "value": "iron"},
+        {"text": "NMN 抗衰产品", "value": "nmn"},
+        {"text": "胶原蛋白", "value": "collagen"},
+        {"text": "益生菌", "value": "probiotic"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您未来 6 个月愿意尝试哪些品类？",
+      "required": true,
+      "config": {
+        "max_select": 3,
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "option_extras": {
+          "herbal_extract": {"text_placeholder": "请填写具体名称"},
+          "tcm_tonic": {"text_placeholder": "请填写具体名称"}
+        }
+      },
+      "options": [
+        {"text": "鱼油", "value": "fish_oil"},
+        {"text": "复合维生素", "value": "multivitamin"},
+        {"text": "草本提取保健品", "value": "herbal_extract"},
+        {"text": "传统中式保养品", "value": "tcm_tonic"},
+        {"text": "补镁营养剂", "value": "magnesium"},
+        {"text": "补铁营养剂", "value": "iron"},
+        {"text": "NMN 抗衰产品", "value": "nmn"},
+        {"text": "胶原蛋白", "value": "collagen"},
+        {"text": "益生菌", "value": "probiotic"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "您购买【{pipe}】的频率是？",
+      "required": true,
+      "config": {
+        "pipe_from": {"question_order": 12},
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "尝试过 1 次", "value": "once"},
+        {"text": "每年 1-2 次", "value": "1_2_yearly"},
+        {"text": "每季度 1 次", "value": "quarterly"},
+        {"text": "每月 1 次", "value": "monthly"},
+        {"text": "每月多次/长期持续购买", "value": "multi_monthly"}
+      ]
+    },
+    {
+      "type": "single_choice",
+      "text": "您过去一年在【{pipe}】总消费金额约为？",
+      "required": true,
+      "config": {
+        "pipe_from": {"question_order": 12},
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "200 元以下", "value": "under_200"},
+        {"text": "200-499 元", "value": "200_499"},
+        {"text": "500-999 元", "value": "500_999"},
+        {"text": "1000-1999 元", "value": "1000_1999"},
+        {"text": "2000 元以上", "value": "over_2000"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您通常通过哪些渠道购买【{pipe}】？",
+      "required": true,
+      "config": {
+        "pipe_from": {"question_order": 12},
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "天猫/淘宝", "value": "tmall_taobao"},
+        {"text": "京东", "value": "jd"},
+        {"text": "抖音", "value": "douyin"},
+        {"text": "小红书种草后购买", "value": "xhs"},
+        {"text": "药店", "value": "pharmacy"},
+        {"text": "线下商超/会员店", "value": "offline_supermarket"},
+        {"text": "跨境电商", "value": "cross_border"},
+        {"text": "代购", "value": "proxy_buy"},
+        {"text": "品牌官网", "value": "brand_site"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您购买【{pipe}】的主要原因是？（最多选 3 项）",
+      "required": true,
+      "config": {
+        "max_select": 3,
+        "pipe_from": {"question_order": 12},
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "日常保养", "value": "daily_health"},
+        {"text": "明确健康问题改善", "value": "specific_issue"},
+        {"text": "医生/营养师建议", "value": "doctor_rec"},
+        {"text": "家人推荐", "value": "family_rec"},
+        {"text": "社媒种草", "value": "social_media"},
+        {"text": "品牌信任", "value": "brand_trust"},
+        {"text": "进口身份背书", "value": "imported"},
+        {"text": "成分热门", "value": "trendy_ingredient"},
+        {"text": "朋友推荐", "value": "friend_rec"},
+        {"text": "价格优惠活动", "value": "discount"}
+      ]
+    },
+    {
+      "type": "matrix_likert",
+      "text": "购买营养保健品时，以下因素对您有多重要？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "labels": ["非常不重要", "不重要", "一般", "重要", "非常重要"],
+        "matrix_rows": [
+          {"value": "efficacy", "text": "功效明确"},
+          {"value": "safety", "text": "成分安全"},
+          {"value": "brand_fame", "text": "品牌知名度"},
+          {"value": "certification", "text": "官方认证/资质"},
+          {"value": "doctor_endorse", "text": "医生/专家背书"},
+          {"value": "imported", "text": "是否进口"},
+          {"value": "price", "text": "价格"},
+          {"value": "form_convenient", "text": "剂型方便（胶囊/软糖/饮品等）"},
+          {"value": "user_reviews", "text": "用户口碑评价"},
+          {"value": "delivery_speed", "text": "发货速度/履约体验"}
+        ]
       }
     },
     {
-      "type": "text_long",
-      "text": "您对保健品行业或具体产品有什么建议？",
-      "required": false,
-      "config": {"placeholder": "请畅所欲言……"}
+      "type": "single_choice",
+      "text": "若产品效果相近，您更倾向购买哪类品牌？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "中国本土品牌", "value": "china"},
+        {"text": "日本品牌", "value": "japan"},
+        {"text": "澳洲品牌", "value": "australia"},
+        {"text": "欧美品牌", "value": "eu_us"},
+        {"text": "无明显偏好", "value": "no_pref"}
+      ]
+    },
+    {
+      "type": "matrix_single",
+      "text": "您认为以下来源地品牌在哪些方面更强？（每行选一项）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "matrix_rows": [
+          {"value": "safer", "text": "更安全放心"},
+          {"value": "more_professional", "text": "更专业科学"},
+          {"value": "fit_chinese", "text": "更适合中国人"},
+          {"value": "more_natural", "text": "更天然"},
+          {"value": "worth_premium", "text": "更值得多花钱"}
+        ],
+        "matrix_columns": [
+          {"value": "china", "text": "中国"},
+          {"value": "japan", "text": "日本"},
+          {"value": "australia", "text": "澳洲"},
+          {"value": "eu_us", "text": "欧美"},
+          {"value": "similar", "text": "都差不多"}
+        ]
+      }
+    },
+    {
+      "type": "single_choice",
+      "text": "假如未来您要新增购买一类营养保健品，您更偏向哪类需求？（这道题不进入联合分析，用于帮您代入场景）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"}
+      },
+      "options": [
+        {"text": "日常基础营养补充", "value": "daily"},
+        {"text": "肠胃调理/日常轻调理", "value": "gut_light"},
+        {"text": "中老年健康管理", "value": "elder_health"},
+        {"text": "抗衰美容/悦己管理", "value": "beauty_age"},
+        {"text": "草本调理/体质养护", "value": "herbal_care"},
+        {"text": "骨骼关节健康/补钙", "value": "joint_calcium"}
+      ]
+    },
+    {
+      "type": "cbc_task",
+      "text": "假设您正在挑选一款营养保健品，以下三款产品您最愿意选择哪一款？（第 1 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 0,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 2 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 1,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 3 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 2,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 4 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 3,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 5 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 4,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 6 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 5,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 7 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 6,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "cbc_task",
+      "text": "以下三款产品您最愿意选择哪一款？（第 8 / 8 题）",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "cbc_task_index": 7,
+        "cbc_none_label": "都不选",
+        "cbc_attributes": [
+          {"key": "origin", "label": "品牌来源", "levels": [
+            {"value": "cn", "label": "中国本土品牌"},
+            {"value": "jp", "label": "日本品牌"},
+            {"value": "au", "label": "澳洲品牌"}
+          ]},
+          {"key": "price", "label": "月使用成本", "levels": [
+            {"value": "99", "label": "99 元/月"},
+            {"value": "199", "label": "199 元/月"},
+            {"value": "299", "label": "299 元/月"}
+          ]},
+          {"key": "form", "label": "剂型", "levels": [
+            {"value": "capsule", "label": "胶囊/片剂"},
+            {"value": "gummy", "label": "软糖"},
+            {"value": "drink", "label": "饮品/冲剂"}
+          ]},
+          {"key": "claim", "label": "核心卖点", "levels": [
+            {"value": "efficacy", "label": "明确功效导向"},
+            {"value": "purity", "label": "高纯度/高含量成分"},
+            {"value": "herbal", "label": "天然草本/温和调理"}
+          ]},
+          {"key": "trust", "label": "信任背书", "levels": [
+            {"value": "doctor", "label": "医生/营养专家推荐"},
+            {"value": "imported", "label": "海外原料/进口品质背书"},
+            {"value": "reviews", "label": "高销量/用户口碑背书"}
+          ]}
+        ]
+      }
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您觉得当前市场上的营养保健品普遍存在哪些问题？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
+      },
+      "options": [
+        {"text": "功效不明显", "value": "efficacy_vague"},
+        {"text": "见效慢", "value": "slow_effect"},
+        {"text": "品牌太多，不知道选谁", "value": "too_many_brands"},
+        {"text": "宣传夸大，不够可信", "value": "exaggerated_ads"},
+        {"text": "成分复杂看不懂", "value": "complex_ingredients"},
+        {"text": "剂量不透明", "value": "unclear_dosage"},
+        {"text": "价格偏高", "value": "too_expensive"},
+        {"text": "剂型麻烦，不好坚持", "value": "hard_to_persist"},
+        {"text": "口感差", "value": "bad_taste"},
+        {"text": "担心副作用", "value": "side_effects"},
+        {"text": "假货/渠道不放心", "value": "counterfeit"},
+        {"text": "不适合中国人体质", "value": "not_chinese_body"},
+        {"text": "其他", "value": "other"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "如果让您选择最希望被改善的问题，是？（最多选 3 项）",
+      "required": true,
+      "config": {
+        "max_select": 3,
+        "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
+      },
+      "options": [
+        {"text": "功效不明显", "value": "efficacy_vague"},
+        {"text": "见效慢", "value": "slow_effect"},
+        {"text": "品牌太多，不知道选谁", "value": "too_many_brands"},
+        {"text": "宣传夸大，不够可信", "value": "exaggerated_ads"},
+        {"text": "成分复杂看不懂", "value": "complex_ingredients"},
+        {"text": "剂量不透明", "value": "unclear_dosage"},
+        {"text": "价格偏高", "value": "too_expensive"},
+        {"text": "剂型麻烦，不好坚持", "value": "hard_to_persist"},
+        {"text": "口感差", "value": "bad_taste"},
+        {"text": "担心副作用", "value": "side_effects"},
+        {"text": "假货/渠道不放心", "value": "counterfeit"},
+        {"text": "不适合中国人体质", "value": "not_chinese_body"},
+        {"text": "其他", "value": "other"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "您过去 12 个月没有购买营养保健品的主要原因是？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "no"}
+      },
+      "options": [
+        {"text": "没需求", "value": "no_need"},
+        {"text": "饮食足够健康", "value": "healthy_diet"},
+        {"text": "不相信有效", "value": "not_believe"},
+        {"text": "不知道怎么选", "value": "dunno_how"},
+        {"text": "太贵", "value": "too_expensive"},
+        {"text": "担心副作用", "value": "side_effects"},
+        {"text": "觉得是智商税", "value": "iq_tax"},
+        {"text": "品牌太杂乱", "value": "too_many_brands"},
+        {"text": "没时间研究", "value": "no_time"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "什么情况下您会考虑首次尝试？",
+      "required": true,
+      "config": {
+        "show_if": {"question_order": 5, "operator": "equals", "value": "no"},
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
+      },
+      "options": [
+        {"text": "医生建议", "value": "doctor_rec"},
+        {"text": "家人体检提醒", "value": "family_health_check"},
+        {"text": "更低价格", "value": "lower_price"},
+        {"text": "大品牌更可信", "value": "big_brand"},
+        {"text": "明确功效产品", "value": "clear_efficacy"},
+        {"text": "朋友推荐", "value": "friend_rec"},
+        {"text": "小规格试用装", "value": "trial_size"},
+        {"text": "进口品牌保障", "value": "imported"},
+        {"text": "其他", "value": "other"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "以下新趋势产品中，您最感兴趣的是？（最多选 3 项）",
+      "required": true,
+      "config": {
+        "max_select": 3
+      },
+      "options": [
+        {"text": "补镁营养剂（调节睡眠、情绪）", "value": "magnesium"},
+        {"text": "补铁营养剂（气色红润）", "value": "iron"},
+        {"text": "益生菌（肠胃调理、控制体重）", "value": "probiotic"},
+        {"text": "高纯度鱼油", "value": "high_purity_fish_oil"},
+        {"text": "抗衰 NMN", "value": "nmn"},
+        {"text": "胶原蛋白美容饮", "value": "collagen_beauty_drink"},
+        {"text": "草本护肝产品", "value": "herbal_liver"},
+        {"text": "草本护眼产品", "value": "herbal_eye"},
+        {"text": "日常复合维生素", "value": "multivitamin"}
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "text": "若有一个新品牌进入市场，您最看重它具备什么特点？（最多选 3 项）",
+      "required": true,
+      "config": {
+        "max_select": 3,
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
+      },
+      "options": [
+        {"text": "功效真实可信", "value": "real_efficacy"},
+        {"text": "成分科学透明", "value": "transparent_ingredients"},
+        {"text": "海外背景/进口", "value": "overseas_imported"},
+        {"text": "中国人体质定制", "value": "chinese_body_custom"},
+        {"text": "高性价比", "value": "cost_effective"},
+        {"text": "方便坚持（软糖/饮品）", "value": "convenient"},
+        {"text": "医生专家推荐", "value": "doctor_rec"},
+        {"text": "用户口碑高", "value": "user_reviews"},
+        {"text": "其他", "value": "other"}
+      ]
     }
   ]
 }

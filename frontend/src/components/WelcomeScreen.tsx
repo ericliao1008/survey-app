@@ -19,6 +19,9 @@ const WEIGHTS: Record<Question["type"], number> = {
   multiple_choice: 12,
   likert_5: 8,
   rating_10: 8,
+  matrix_single: 30,
+  matrix_likert: 40,
+  cbc_task: 35,
 };
 
 function estimateMinutes(questions: Question[]): number {

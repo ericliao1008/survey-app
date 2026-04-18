@@ -1,16 +1,34 @@
 import type { Question } from "@/lib/types";
 
+interface OptionExtra {
+  text_placeholder?: string;
+}
+
 interface Props {
   question: Question;
   value: number | null;
   onChange: (optionId: number) => void;
+  optionTexts?: Record<number, string>;
+  onOptionTextChange?: (optionId: number, text: string) => void;
 }
 
-export function SingleChoice({ question, value, onChange }: Props) {
+export function SingleChoice({
+  question,
+  value,
+  onChange,
+  optionTexts,
+  onOptionTextChange,
+}: Props) {
+  const cfg = (question.config ?? {}) as {
+    option_extras?: Record<string, OptionExtra>;
+  };
+  const optionExtras = cfg.option_extras ?? {};
+
   return (
     <ul className="divide-y divide-paper-300 border-t border-b border-paper-300">
       {question.options.map((opt, i) => {
         const selected = value === opt.id;
+        const extra = optionExtras[opt.value];
         return (
           <li key={opt.id}>
             <button
@@ -24,7 +42,6 @@ export function SingleChoice({ question, value, onChange }: Props) {
                 ${selected ? "text-paper-900 bg-wine-600/[0.035]" : "text-paper-800 hover:text-paper-900"}
               `}
             >
-              {/* 左侧装饰条 —— 编辑式强调 */}
               <span
                 aria-hidden="true"
                 className={`
@@ -64,6 +81,20 @@ export function SingleChoice({ question, value, onChange }: Props) {
                 {opt.text}
               </span>
             </button>
+            {selected && extra && onOptionTextChange && (
+              <div
+                className="pl-14 pr-2 pb-5 -mt-2 animate-fade-in"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <input
+                  type="text"
+                  value={optionTexts?.[opt.id] ?? ""}
+                  onChange={(e) => onOptionTextChange(opt.id, e.target.value)}
+                  placeholder={extra.text_placeholder ?? "请填写"}
+                  className="w-full bg-transparent border-0 border-b border-paper-400 focus:border-wine-600 focus:ring-0 outline-none font-serif text-base text-paper-900 placeholder:text-paper-500 py-2"
+                />
+              </div>
+            )}
           </li>
         );
       })}

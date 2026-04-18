@@ -70,6 +70,8 @@ def submit_response(
             value_text=ans.value_text,
             value_number=ans.value_number,
             selected_option_ids=ans.selected_option_ids,
+            value_json=ans.value_json,
+            pipe_option_id=ans.pipe_option_id,
         )
         db.add(answer)
 

@@ -2,6 +2,7 @@ import type { Question } from "@/lib/types";
 
 interface OptionExtra {
   text_placeholder?: string;
+  require_text?: boolean;
 }
 
 interface Props {
@@ -81,20 +82,35 @@ export function SingleChoice({
                 {opt.text}
               </span>
             </button>
-            {selected && extra && onOptionTextChange && (
-              <div
-                className="pl-14 pr-2 pb-5 -mt-2 animate-fade-in"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <input
-                  type="text"
-                  value={optionTexts?.[opt.id] ?? ""}
-                  onChange={(e) => onOptionTextChange(opt.id, e.target.value)}
-                  placeholder={extra.text_placeholder ?? "请填写"}
-                  className="w-full bg-transparent border-0 border-b border-paper-400 focus:border-wine-600 focus:ring-0 outline-none font-serif text-base text-paper-900 placeholder:text-paper-500 py-2"
-                />
-              </div>
-            )}
+            {selected && extra && onOptionTextChange && (() => {
+              const curText = optionTexts?.[opt.id] ?? "";
+              const missing = extra.require_text && curText.trim().length === 0;
+              return (
+                <div
+                  className="pl-14 pr-2 pb-5 -mt-2 animate-fade-in"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    type="text"
+                    value={curText}
+                    onChange={(e) => onOptionTextChange(opt.id, e.target.value)}
+                    placeholder={
+                      (extra.text_placeholder ?? "请填写") +
+                      (extra.require_text ? "（必填）" : "")
+                    }
+                    className={`
+                      w-full bg-transparent border-0 border-b focus:ring-0 outline-none font-serif text-base text-paper-900 placeholder:text-paper-500 py-2
+                      ${missing ? "border-wine-600" : "border-paper-400 focus:border-wine-600"}
+                    `}
+                  />
+                  {missing && (
+                    <p className="mt-1 font-sans text-xs text-wine-600">
+                      请填写具体内容
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
           </li>
         );
       })}

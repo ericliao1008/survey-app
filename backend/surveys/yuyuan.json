@@ -32,16 +32,13 @@
       ]
     },
     {
-      "type": "single_choice",
-      "text": "您目前居住城市属于？",
+      "type": "text_short",
+      "text": "您目前居住的城市 / 县城 / 乡镇是？",
       "required": true,
-      "options": [
-        {"text": "一线城市", "value": "tier1"},
-        {"text": "新一线城市", "value": "new_tier1"},
-        {"text": "二线城市", "value": "tier2"},
-        {"text": "三线城市", "value": "tier3"},
-        {"text": "四线及以下城市", "value": "tier4_below"}
-      ]
+      "config": {
+        "placeholder": "请输入（支持中国城市、县城、乡镇，输入时会自动提示匹配）",
+        "suggestions_key": "china_cities"
+      }
     },
     {
       "type": "single_choice",
@@ -195,8 +192,8 @@
       "config": {
         "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
         "option_extras": {
-          "herbal_extract": {"text_placeholder": "请填写具体名称（如奶蓟草、叶黄素…）"},
-          "tcm_tonic": {"text_placeholder": "请填写具体名称（如阿胶、枸杞原浆…）"}
+          "herbal_extract": {"text_placeholder": "请填写具体名称（如奶蓟草、叶黄素…）", "require_text": true},
+          "tcm_tonic": {"text_placeholder": "请填写具体名称（如阿胶、枸杞原浆…）", "require_text": true}
         }
       },
       "options": [
@@ -219,8 +216,8 @@
         "max_select": 3,
         "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
         "option_extras": {
-          "herbal_extract": {"text_placeholder": "请填写具体名称"},
-          "tcm_tonic": {"text_placeholder": "请填写具体名称"}
+          "herbal_extract": {"text_placeholder": "请填写具体名称", "require_text": true},
+          "tcm_tonic": {"text_placeholder": "请填写具体名称", "require_text": true}
         }
       },
       "options": [
@@ -550,7 +547,7 @@
         {"text": "海外背景/进口", "value": "overseas_imported"},
         {"text": "中国人体质定制", "value": "chinese_body_custom"},
         {"text": "高性价比", "value": "cost_effective"},
-        {"text": "方便坚持（软糖/饮品）", "value": "convenient"},
+        {"text": "剂型方便坚持（软糖/饮品/微小剂型好吞咽）", "value": "convenient"},
         {"text": "医生专家推荐", "value": "doctor_rec"},
         {"text": "用户口碑高", "value": "user_reviews"},
         {"text": "其他", "value": "other"}

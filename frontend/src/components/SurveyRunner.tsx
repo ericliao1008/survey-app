@@ -56,13 +56,42 @@ type Phase = "welcome" | "questions" | "terminated";
 function isAnswered(q: Question, state: AnswerState | undefined): boolean {
   if (!state) return false;
   switch (q.type) {
-    case "single_choice":
-      return state.singleOptionId != null;
+    case "single_choice": {
+      if (state.singleOptionId == null) return false;
+      const cfg = (q.config ?? {}) as {
+        option_extras?: Record<string, { require_text?: boolean }>;
+      };
+      const opt = q.options.find((o) => o.id === state.singleOptionId);
+      const extras = cfg.option_extras ?? {};
+      if (opt) {
+        const ex = extras[opt.value];
+        if (ex?.require_text) {
+          const txt = state.optionTexts?.[opt.id] ?? "";
+          if (txt.trim().length === 0) return false;
+        }
+      }
+      return true;
+    }
     case "multiple_choice": {
       const ids = state.optionIds ?? [];
-      const cfg = (q.config ?? {}) as { max_select?: number; min_select?: number };
+      const cfg = (q.config ?? {}) as {
+        max_select?: number;
+        min_select?: number;
+        option_extras?: Record<string, { require_text?: boolean }>;
+      };
       const minNeeded = cfg.min_select ?? 1;
       if (ids.length < minNeeded) return false;
+      // require_text：选中该选项必须填文本
+      const extras = cfg.option_extras ?? {};
+      const texts = state.optionTexts ?? {};
+      for (const oid of ids) {
+        const opt = q.options.find((o) => o.id === oid);
+        if (!opt) continue;
+        const ex = extras[opt.value];
+        if (ex?.require_text && (texts[oid] ?? "").trim().length === 0) {
+          return false;
+        }
+      }
       return true;
     }
     case "text_short":

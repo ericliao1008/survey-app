@@ -517,7 +517,10 @@
       "text": "以下新趋势产品中，您最感兴趣的是？",
       "required": true,
       "config": {
-        "max_select": 3
+        "max_select": 3,
+        "option_extras": {
+          "other": {"text_placeholder": "请说明"}
+        }
       },
       "options": [
         {"text": "补镁营养剂（调节睡眠、情绪）", "value": "magnesium"},
@@ -528,7 +531,8 @@
         {"text": "胶原蛋白美容饮", "value": "collagen_beauty_drink"},
         {"text": "草本护肝产品", "value": "herbal_liver"},
         {"text": "草本护眼产品", "value": "herbal_eye"},
-        {"text": "日常复合维生素", "value": "multivitamin"}
+        {"text": "日常复合维生素", "value": "multivitamin"},
+        {"text": "其他", "value": "other"}
       ]
     },
     {

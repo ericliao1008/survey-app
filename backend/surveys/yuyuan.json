@@ -60,7 +60,7 @@
       "required": true,
       "config": {
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [
@@ -425,7 +425,7 @@
       "config": {
         "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [
@@ -452,7 +452,7 @@
         "max_select": 3,
         "show_if": {"question_order": 5, "operator": "equals", "value": "yes"},
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [
@@ -497,7 +497,7 @@
       "config": {
         "show_if": {"question_order": 5, "operator": "equals", "value": "no"},
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [
@@ -519,7 +519,7 @@
       "config": {
         "max_select": 3,
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [
@@ -542,7 +542,7 @@
       "config": {
         "max_select": 3,
         "option_extras": {
-          "other": {"text_placeholder": "请说明"}
+          "other": {"text_placeholder": "请说明", "require_text": true}
         }
       },
       "options": [

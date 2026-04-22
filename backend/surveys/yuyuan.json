@@ -64,7 +64,7 @@
         }
       },
       "options": [
-        {"text": "单身", "value": "single"},
+        {"text": "未婚", "value": "single"},
         {"text": "已婚未育", "value": "married_no_kids"},
         {"text": "已婚有孩（孩子未成年）", "value": "married_kids_minor"},
         {"text": "已婚有孩（孩子成年）", "value": "married_kids_adult"},

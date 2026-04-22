@@ -148,12 +148,11 @@
         "show_if": {"question_order": 6, "operator": "equals", "value": "yes"}
       },
       "options": [
-        {"text": "¥500 以下", "value": "under_500"},
+        {"text": "¥100 以下", "value": "under_100"},
+        {"text": "¥100-¥499", "value": "100_499"},
         {"text": "¥500-¥999", "value": "500_999"},
-        {"text": "¥1000-¥1499", "value": "1000_1499"},
-        {"text": "¥1500-¥1999", "value": "1500_1999"},
-        {"text": "¥2000-¥2499", "value": "2000_2499"},
-        {"text": "¥2500 及以上", "value": "over_2500"}
+        {"text": "¥1000-¥1999", "value": "1000_1999"},
+        {"text": "¥2000 及以上", "value": "over_2000"}
       ]
     },
     {

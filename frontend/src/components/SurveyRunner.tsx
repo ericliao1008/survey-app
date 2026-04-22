@@ -186,6 +186,36 @@ function toPayload(
   }
 }
 
+// 根据 config.exclude_from_question 过滤单选题选项（排除已在前题选过的需求类别）
+function applyExcludeFromQuestion(
+  q: Question,
+  allQuestions: Question[],
+  answers: Record<string, AnswerState>
+): Question {
+  const cfg = (q.config ?? {}) as {
+    exclude_from_question?: {
+      question_order: number;
+      value_map: Record<string, string>;
+    };
+  };
+  const excCfg = cfg.exclude_from_question;
+  if (!excCfg) return q;
+  const refQ = allQuestions[excCfg.question_order];
+  if (!refQ) return q;
+  const a = answers[String(refQ.id)];
+  if (!a) return q;
+  const selectedValues = new Set(
+    (a.optionIds ?? [])
+      .map((id) => refQ.options.find((o) => o.id === id)?.value)
+      .filter((v): v is string => typeof v === "string")
+  );
+  const filtered = q.options.filter((opt) => {
+    const mapped = excCfg.value_map[opt.value];
+    return !mapped || !selectedValues.has(mapped);
+  });
+  return filtered.length < q.options.length ? { ...q, options: filtered } : q;
+}
+
 // 判断 single_choice 当前答案是否触发终止
 function answerTerminates(q: Question, state: AnswerState | undefined): boolean {
   if (q.type !== "single_choice") return false;
@@ -621,10 +651,11 @@ export function SurveyRunner({ survey }: Props) {
     const q = inst.question;
     const s = answers[inst.key] ?? {};
     switch (q.type) {
-      case "single_choice":
+      case "single_choice": {
+        const qFiltered = applyExcludeFromQuestion(q, survey.questions, answers);
         return (
           <SingleChoice
-            question={q}
+            question={qFiltered}
             value={s.singleOptionId ?? null}
             onChange={(id) => updateState({ singleOptionId: id })}
             optionTexts={s.optionTexts}
@@ -635,6 +666,7 @@ export function SurveyRunner({ survey }: Props) {
             }
           />
         );
+      }
       case "multiple_choice":
         return (
           <MultipleChoice

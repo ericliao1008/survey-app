@@ -216,10 +216,16 @@ export const CHINA_CITIES: string[] = [
   "澳门", "澳门半岛", "氹仔", "路环",
 ];
 
-/** 简单前缀/子串匹配，返回最多 N 条建议。 */
+const DEFAULT_CITIES = [
+  "北京", "上海", "广州", "深圳", "成都", "杭州",
+  "武汉", "重庆", "西安", "南京", "天津", "苏州",
+  "长沙", "郑州", "青岛", "宁波", "合肥", "厦门",
+];
+
+/** 简单前缀/子串匹配，返回最多 N 条建议；空查询返回热门城市列表。 */
 export function searchCities(query: string, limit = 8): string[] {
   const q = query.trim();
-  if (!q) return [];
+  if (!q) return DEFAULT_CITIES.slice(0, limit);
   const exact: string[] = [];
   const starts: string[] = [];
   const contains: string[] = [];

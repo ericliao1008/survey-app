@@ -9,8 +9,8 @@
       "text": "您的年龄是？",
       "required": true,
       "config": {
-        "terminate_on_values": ["under_18", "over_70"],
-        "terminate_message": "非常感谢您的参与。本次调研面向 18-70 岁的消费者，您不在本次调研对象范围内，我们不再继续询问。再次感谢您抽出时间。"
+        "terminate_on_values": ["under_18"],
+        "terminate_message": "非常感谢您的参与。本次调研面向 18 岁及以上的消费者，您不在本次调研对象范围内，我们不再继续询问。再次感谢您抽出时间。"
       },
       "options": [
         {"text": "18 岁以下", "value": "under_18"},
@@ -18,8 +18,8 @@
         {"text": "25-34 岁", "value": "25_34"},
         {"text": "35-44 岁", "value": "35_44"},
         {"text": "45-54 岁", "value": "45_54"},
-        {"text": "55-70 岁", "value": "55_70"},
-        {"text": "70 岁以上", "value": "over_70"}
+        {"text": "55-64 岁", "value": "55_64"},
+        {"text": "65 岁及以上", "value": "over_65"}
       ]
     },
     {

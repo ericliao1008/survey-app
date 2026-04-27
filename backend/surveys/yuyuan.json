@@ -77,8 +77,8 @@
       "text": "您目前从事的行业是？",
       "required": true,
       "config": {
-        "terminate_on_values": ["health_supplement", "ecommerce", "market_research"],
-        "terminate_message": "非常感谢您的参与。为确保调研数据的客观性，从事营养保健品、电商或市场调研相关行业的人员不在本次调研范围内。再次感谢您抽出时间！"
+        "terminate_on_values": ["health_supplement", "market_research"],
+        "terminate_message": "非常感谢您的参与。为确保调研数据的客观性，从事营养保健品或市场调研相关行业的人员不在本次调研范围内。再次感谢您抽出时间！"
       },
       "options": [
         {"text": "营养保健品 / 医药健康行业", "value": "health_supplement"},
